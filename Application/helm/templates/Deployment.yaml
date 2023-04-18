@@ -1,0 +1,40 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.ReplicaNumber }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      volumes:
+        - name: index-html
+          configMap:
+            name: index.html
+            defaultMode: 420
+      containers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: {{ .Release.Name }}
+          volumeMounts:
+            - name: index-html
+              mountPath: /tmp/html # this will mount the html.index file to it application location
+          ports:
+            - containerPort: {{ .Values.containers.containerPort }}
+              protocol: TCP
+          imagePullPolicy: Always
+          terminationMessagePolicy: File
+          image: {{ .Values.containers.image }}:{{ .Values.containers.tag }}
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
