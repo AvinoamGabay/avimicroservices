@@ -2,8 +2,8 @@ ReplicaNumber: 3
 
 containers:
   containerPort: 8080
-  image: 'quay.io/avinoam_gabay/hellowavi:chart'
-  tag: 'base_v1'
+  image: 'quay.io/avinoam_gabay/hellowavi'
+  tag: 'chart_v1'
 
 service:
   servicePort: 8080
